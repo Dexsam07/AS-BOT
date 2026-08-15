@@ -1,4 +1,4 @@
-const data = require('../../lib/personal-data');
+const data = require('../../../lib/personal-data');
 
 module.exports = {
   command: 'remind',

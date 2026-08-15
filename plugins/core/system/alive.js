@@ -1,8 +1,8 @@
 const os = require('node:os');
-const config = require('../../config');
-const metrics = require('../../lib/metrics');
-const queue = require('../../lib/job-queue');
-const memory = require('../../lib/memory-guard');
+const config = require('../../../config');
+const metrics = require('../../../lib/metrics');
+const queue = require('../../../lib/job-queue');
+const memory = require('../../../lib/memory-guard');
 
 function formatUptime(seconds) { const s = Math.floor(seconds); const d = Math.floor(s / 86400); const h = Math.floor((s % 86400) / 3600); const m = Math.floor((s % 3600) / 60); return `${d}d ${h}h ${m}m`; }
 module.exports = {

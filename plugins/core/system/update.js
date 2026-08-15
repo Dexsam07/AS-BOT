@@ -1,4 +1,4 @@
-const updateManager = require('../../lib/update-manager');
+const updateManager = require('../../../lib/update-manager');
 
 function help() {
   return [

@@ -1,4 +1,4 @@
-const runtimeSettings = require('../../lib/runtime-settings');
+const runtimeSettings = require('../../../lib/runtime-settings');
 
 function usage() {
   return [

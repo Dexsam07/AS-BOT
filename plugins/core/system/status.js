@@ -1,6 +1,6 @@
-const metrics = require('../../lib/metrics');
-const queue = require('../../lib/job-queue');
-const memory = require('../../lib/memory-guard');
+const metrics = require('../../../lib/metrics');
+const queue = require('../../../lib/job-queue');
+const memory = require('../../../lib/memory-guard');
 module.exports = {
   command: 'status',
   aliases: ['diagnostics', 'diag'],

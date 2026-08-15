@@ -29,12 +29,14 @@ async function loadRegistry(logger = console) {
   const runtime = await runtimeSettings.getAll();
   Object.assign(config, runtime);
   config.PREFIX = '';
-  const builtinDir = path.join(__dirname, 'commands');
-  const externalDir = path.resolve(config.EXTERNAL_PLUGIN_DIR);
+  const coreDir = path.join(__dirname, 'plugins', 'core');
+  const pluginDir = path.resolve(config.EXTERNAL_PLUGIN_DIR);
   const modern = await loadPlugins({
-    pluginsDir: builtinDir,
-    pluginDirs: [externalDir],
+    pluginsDir: coreDir,
+    pluginDirs: [pluginDir],
     includeExternal: config.LOAD_EXTERNAL_PLUGINS,
+    primarySource: 'core',
+    externalSource: 'plugins',
     logger
   });
   return { registry: modern.registry, modern };
@@ -44,7 +46,7 @@ async function main() {
   const session = validateConfiguredSession();
   health.update({ state: 'validated', bot: config.BOT_NAME, fingerprint: session.fingerprint });
   const loaded = await loadRegistry(console);
-  console.log(`[plugins] builtin=${loaded.modern.registry.filter((item) => item.source === 'builtin').length} external=${loaded.modern.registry.filter((item) => item.source === 'external').length} skipped=${loaded.modern.skipped.length}`);
+  console.log(`[plugins] core=${loaded.modern.registry.filter((item) => item.source === 'core').length} plugins=${loaded.modern.registry.filter((item) => item.source === 'plugins').length} skipped=${loaded.modern.skipped.length}`);
   console.log(`[session] prefix=${session.prefix} fingerprint=${session.fingerprint}`);
 
   let connection;

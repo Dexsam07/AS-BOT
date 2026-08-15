@@ -18,8 +18,8 @@ test('owner authorization does not bypass WhatsApp bot-admin capability', async 
   const result = await authorize({ command: { ownerOnly: true, requiresBotAdmin: true }, context: { sender: `${config.OWNER_NUMBER}@s.whatsapp.net`, chatId: '123@g.us', isGroup: true, message: { key: {} } }, sock: { user: { id: '999@s.whatsapp.net' }, groupMetadata: async () => ({ participants: [] }) } });
   assert.equal(result.ownerAuthorized, true); assert.equal(result.allowed, false); assert.equal(result.reason, 'BOT_ADMIN_REQUIRED');
 });
-test('built-in command directory loads standardized commands', async () => {
-  const result = await loadDirectory(path.join(__dirname, 'commands'), { logger: { warn() {} } });
+test('plugin core directory loads standardized commands', async () => {
+  const result = await loadDirectory(path.join(__dirname, 'plugins', 'core'), { logger: { warn() {} }, source: 'core' });
   assert.ok(result.registry.length >= 7); assert.ok(result.registry.some((item) => item.name === 'help')); assert.ok(result.registry.some((item) => item.name === 'settings'));
 });
 test('natural command registry does not require a dot prefix', () => { const map = buildCommandMap([{ name: 'ping', aliases: ['alive'], handler() {} }]); assert.ok(map.get('ping')); assert.ok(map.get('alive')); assert.equal(map.get('.ping'), undefined); });
@@ -27,7 +27,7 @@ test('job queue executes a simple job', async () => assert.equal(await queue.sub
 
 test('owner update command applies GitHub update and requests restart', async () => {
   const managerPath = require.resolve('./lib/update-manager');
-  const commandPath = require.resolve('./commands/system/update');
+  const commandPath = require.resolve('./plugins/core/system/update');
   const previousManager = require.cache[managerPath];
   const previousCommand = require.cache[commandPath];
   const replies = [];
@@ -66,7 +66,7 @@ test('owner update command applies GitHub update and requests restart', async ()
 });
 
 test('professional menu renders live categories and branding', async () => {
-  const menu = require('./commands/system/menu');
+  const menu = require('./plugins/core/system/menu');
   let output = '';
   const context = {
     registry: [
@@ -95,7 +95,7 @@ test('setting compatibility layer keeps prefixless and secret-safe defaults', ()
 });
 
 test('interactive menu sends category list, quick buttons, and direct command rows', async () => {
-  const menu = require('./commands/system/menu');
+  const menu = require('./plugins/core/system/menu');
   const sent = [];
   const context = {
     registry: [

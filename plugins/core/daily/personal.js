@@ -1,4 +1,4 @@
-const data = require('../../lib/personal-data');
+const data = require('../../../lib/personal-data');
 
 function helpText() {
   return 'Use: `note add <text>`, `notes`, `note clear`, `todo add <text>`, `todos`, `todo done <id>`';

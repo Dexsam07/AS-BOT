@@ -109,9 +109,9 @@ The most important public configuration defaults are shown below. Keep real sess
 
 ## Plugin compatibility
 
-The `plugins/` directory contains reference and legacy command modules. The loader accepts modern standardized exports as well as the common registration APIs used by the included plugin collection. Compatible commands are registered into the current router and automatically appear in the live menu. Duplicate command names are ignored in favor of the first registered command so that built-in safety and owner controls remain authoritative.
+The `plugins/` directory is the primary command source. Protected controls live under `plugins/core/` and load first; the remaining plugin tree contains compatible standardized and legacy command modules. The loader accepts modern exports and the common `cmd`, `bandah`, `gmd`, `malvin`, `amon`, and `shyam` registration APIs. Compatible commands are registered into the current router and appear in the live menu. Duplicate names are ignored in favor of protected core controls.
 
-Plugin loading is fault-tolerant. A file that depends on a removed legacy module, an unavailable optional package, or a background-only contract is skipped and recorded in startup logs instead of crashing the bot. The compatibility audit included with the project registered 838 commands with declared dependencies available; the exact number can vary when optional packages or provider credentials differ on a host.
+Plugin loading is fault-tolerant. A file that depends on a removed legacy module, an unavailable optional package, or a background-only contract is skipped and recorded in startup logs instead of crashing the bot. The compatibility audit included with the project registered 848 commands with declared dependencies available; the exact number can vary when optional packages or provider credentials differ on a host.
 
 ## GitHub self-update
 
@@ -153,13 +153,11 @@ Persistent hosting must keep the `data/` directory mounted across restarts. The 
 ```text
 AS-BOT/
 ├── assets/                     # Branded bot artwork and static assets
-├── commands/                   # Built-in approved commands
-│   ├── system/                 # Menu, help, status, settings, update
-│   ├── daily/                  # Notes, todos, reminders
-│   └── moderation/              # Guarded group actions
 ├── data/                       # Persistent runtime state; keep private
 ├── lib/                        # Connection, policy, storage, queue, metrics, plugins
-├── plugins/                    # Compatible legacy and reference plugins
+├── plugins/                    # Primary command source
+│   ├── core/                   # Protected menu, settings, update, security controls
+│   └── ...                     # Compatible legacy and reference plugins
 ├── scripts/                    # Syntax, session, health, and audit utilities
 ├── docs/                       # Hosting, update, menu, and validation guides
 ├── index.js                    # Production entry point

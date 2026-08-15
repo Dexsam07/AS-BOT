@@ -1,6 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const config = require('../../config');
+const config = require('../../../config');
 
 const CATEGORY_META = {
   system: { icon: '⚙️', title: 'SYSTEM & INFO' },
@@ -163,7 +163,7 @@ function commandListPayload(group, index, total) {
 
 async function sendMainMenu(context, groups) {
   const imageUrl = process.env.MENU_IMAGE_URL || '';
-  const localImagePath = path.join(__dirname, '../../assets/as-bot-profile.png');
+  const localImagePath = path.join(__dirname, '../../../assets/as-bot-profile.png');
   try {
     if (imageUrl) await sendInteractive(context, { image: { url: imageUrl }, caption: headerText(groups) });
     else if (fs.existsSync(localImagePath)) await sendInteractive(context, { image: fs.readFileSync(localImagePath), caption: headerText(groups) });
