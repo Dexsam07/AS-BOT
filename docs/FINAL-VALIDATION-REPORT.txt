@@ -1,0 +1,49 @@
+AS-BOT COMPLETE PRODUCTION VALIDATION
+root_files=1151
+builtin_command_files=7
+reference_plugin_files=1076
+runtime_lib_files=29
+zip_size=1678277 bytes
+json_manifest=PASS
+secret_scan=PASS
+offline_tests:
+  ---
+  duration_ms: 1.091512
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 195.905169
+session_test:
+
+> as-bot@1.0.0 check-session
+> node scripts/check-session.js --demo
+
+{
+  "valid": true,
+  "prefix": "DEX~",
+  "sessionName": "DEX~",
+  "kind": "json",
+  "fingerprint": "c7b5d93346e7c141",
+  "demo": true
+}
+required_files:
+PASS index.js
+PASS package.json
+PASS config.js
+PASS Dockerfile
+PASS docker-compose.yml
+PASS ecosystem.config.cjs
+PASS .env.example
+PASS .dockerignore
+PASS docs/NONSTOP-HOSTING.md
+PASS docs/ULTRA-LEVEL-AS-BOT-PLAN.md
+PASS scripts/healthcheck.js
+archive_test:
+No errors detected in compressed data of /home/ubuntu/AS-BOT-complete-production.zip.
+PASS

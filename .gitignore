@@ -1,0 +1,17 @@
+node_modules/
+.env
+.env.*
+!.env.example
+session/
+sessions/
+data/*
+!data/.gitkeep
+logs/
+temp/
+tmp/
+cache/
+*.sqlite
+*.db
+*.auth
+*.session
+*.zip

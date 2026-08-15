@@ -1,0 +1,15 @@
+node_modules
+npm-debug.log*
+.env
+.git
+.gitignore
+*.zip
+session
+data/session
+data/audit.jsonl
+data/health.json
+temp
+tmp
+cache
+logs
+README* screenshots

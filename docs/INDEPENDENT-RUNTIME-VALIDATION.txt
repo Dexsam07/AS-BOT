@@ -1,0 +1,21 @@
+AS-BOT INDEPENDENT RUNTIME VALIDATION
+root_files=1125
+plugin_files=1078
+compatibility_files=19
+zip_size=1650256 bytes
+demo_session:
+{
+  "valid": true,
+  "prefix": "DEX~",
+  "sessionName": "DEX~",
+  "kind": "json",
+  "fingerprint": "c7b5d93346e7c141",
+  "demo": true
+}
+wrong_prefix:
+INVALID_SESSION: Session rejected: name must start with DEX~.
+missing_session:
+[startup-error] SESSION_ID is missing. Put the Base64 session in the environment, never in source code.
+archive_test:
+No errors detected in compressed data of /home/ubuntu/AS-BOT-independent-runtime.zip.
+PASS

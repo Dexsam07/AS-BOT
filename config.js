@@ -1,0 +1,23 @@
+module.exports = {
+  BOT_NAME: process.env.BOT_NAME || 'AS-BOT',
+  OWNER_NAME: process.env.OWNER_NAME || 'Shyam Chaudhari',
+  OWNER_NUMBER: process.env.OWNER_NUMBER || '917384287404',
+  PREFIX: '',
+  MODE: process.env.BOT_MODE || 'private',
+  LANGUAGE: process.env.BOT_LANGUAGE || 'en',
+  TIMEZONE: process.env.TIMEZONE || 'Asia/Kolkata',
+  CHANNEL_NAME: process.env.CHANNEL_NAME || 'DEX SHYAM TECH',
+  CHANNEL_ID: process.env.CHANNEL_ID || '120363406449026172@newsletter',
+  CHANNEL_LINK: process.env.CHANNEL_LINK || 'https://whatsapp.com/channel/0029VbBgXTsKwqSKZKy38w2o',
+  VERSION: process.env.BOT_VERSION || '1.0.0',
+  DESCRIPTION: process.env.BOT_DESCRIPTION || 'AS-BOT personal daily-use assistant',
+  SESSION_PREFIX: process.env.SESSION_PREFIX || 'DEX~',
+  SESSION_ID: process.env.SESSION_ID || '',
+  SESSION_DIR: process.env.SESSION_DIR || './data/session',
+    LOAD_EXTERNAL_PLUGINS: process.env.LOAD_EXTERNAL_PLUGINS === 'true',
+  EXTERNAL_PLUGIN_DIR: process.env.EXTERNAL_PLUGIN_DIR || './plugins',
+  AUDIT_FILE: process.env.AUDIT_FILE || './data/audit.jsonl',
+  ENABLE_REMINDERS: process.env.ENABLE_REMINDERS !== 'false',
+  ENABLE_MEMORY_GUARD: process.env.ENABLE_MEMORY_GUARD !== 'false',
+  ENABLE_AUDIT: process.env.ENABLE_AUDIT !== 'false'
+};
