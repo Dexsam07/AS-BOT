@@ -64,3 +64,84 @@ test('owner update command applies GitHub update and requests restart', async ()
     else delete require.cache[commandPath];
   }
 });
+
+test('professional menu renders live categories and branding', async () => {
+  const menu = require('./commands/system/menu');
+  let output = '';
+  const context = {
+    registry: [
+      { name: 'ping', category: 'system', description: 'Check bot latency.' },
+      { name: 'note', aliases: ['notes'], category: 'daily', description: 'Save a personal note.' }
+    ],
+    reply: async (text) => { output = text; }
+  };
+  await menu.handler({}, {}, [], context);
+  assert.match(output, /AS-BOT/);
+  assert.match(output, /DEX SHYAM TECH/);
+  assert.match(output, /SYSTEM & INFO/);
+  assert.match(output, /PERSONAL & DAILY/);
+
+  await menu.handler({}, {}, ['2'], context);
+  assert.match(output, /ping/);
+  assert.match(output, /prefixless/i);
+});
+
+test('setting compatibility layer keeps prefixless and secret-safe defaults', () => {
+  const settings = require('./setting');
+  assert.equal(settings.prefix, '');
+  assert.equal(settings.giphyApiKey, '');
+  assert.match(settings.updateZipUrl, /Dexsam07\/AS-BOT/);
+  assert.equal(settings.channelName, config.CHANNEL_NAME);
+});
+
+test('interactive menu sends category list, quick buttons, and direct command rows', async () => {
+  const menu = require('./commands/system/menu');
+  const sent = [];
+  const context = {
+    registry: [
+      { name: 'owner', category: 'system', description: 'Show owner.' },
+      { name: 'ping', category: 'system', description: 'Check latency.' },
+      { name: 'sticker', category: 'media', description: 'Create a sticker.' }
+    ],
+    message: { key: { id: 'test' } },
+    sendMessage: async (payload) => { sent.push(payload); },
+    reply: async (text) => { sent.push({ text }); }
+  };
+  await menu.handler({}, {}, [], context);
+  assert.equal(sent.length, 2);
+  assert.ok(Array.isArray(sent[0].sections));
+  assert.equal(sent[0].sections[0].rows[0].rowId, 'menu 1');
+  assert.equal(sent[1].buttons[0].buttonId, 'owner');
+  assert.equal(sent[1].buttons[1].buttonId, 'ping');
+
+  sent.length = 0;
+  const systemIndex = menu.commandGroups(context.registry).findIndex((group) => group.category === 'system');
+  await menu.handler({}, {}, [String(systemIndex + 1)], context);
+  assert.equal(sent.length, 1);
+  assert.equal(sent[0].sections[0].rows[0].rowId, 'owner');
+});
+
+test('legacy cmd plugin adapter registers and executes through current context', async () => {
+  const fs = require('node:fs/promises');
+  const os = require('node:os');
+  const { loadDirectory } = require('./lib/plugin-loader');
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'asbot-plugin-test-'));
+  const commandModule = path.join(__dirname, 'command.js');
+  const pluginPath = path.join(tempDir, 'legacy-test.js');
+  await fs.writeFile(pluginPath, `const { cmd } = require(${JSON.stringify(commandModule)});\ncmd({ pattern: 'legacytest', alias: ['lt'], desc: 'Legacy adapter test', category: 'test' }, async (conn, mek, m, { args, reply }) => reply(args.join(' ') || 'ok'));\n`);
+  try {
+    const result = await loadDirectory(tempDir, { logger: { warn() {} }, source: 'test' });
+    assert.equal(result.registry.length, 1);
+    const command = result.registry[0];
+    let output = '';
+    await command.handler({}, { key: { remoteJid: '123@s.whatsapp.net' }, message: {} }, ['hello'], {
+      chatId: '123@s.whatsapp.net', sender: '456@s.whatsapp.net', senderNumber: '456',
+      isOwner: false, isGroup: false, isBotAdmin: false, isSenderAdmin: false,
+      body: 'legacytest hello', reply: async (text) => { output = text; }, react() {}
+    });
+    assert.equal(command.name, 'legacytest');
+    assert.equal(output, 'hello');
+  } finally {
+    await fs.rm(tempDir, { recursive: true, force: true });
+  }
+});

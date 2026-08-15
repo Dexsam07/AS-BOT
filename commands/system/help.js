@@ -2,7 +2,7 @@ const config = require('../../config');
 
 module.exports = {
   command: 'help',
-  aliases: ['menu', 'commands'],
+  aliases: ['commands'],
   category: 'system',
   description: 'Show safe active command list.',
   async handler(sock, message, args, context) {
@@ -11,7 +11,7 @@ module.exports = {
       `Owner: ${config.OWNER_NAME}`,
       `Commands: natural mode (no prefix)`,
       '',
-      '*System:* `help` `alive` `owner` `status` `update status` `update now`',
+      '*System:* `help` `menu` `alive` `owner` `status` `update status` `update now`',
       '*Daily:* `note add <text>` `notes` `todo add <text>` `todos`',
       '*Reminder:* `remind <minutes> <text>`',
       '',

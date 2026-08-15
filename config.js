@@ -14,7 +14,7 @@ module.exports = {
   SESSION_PREFIX: process.env.SESSION_PREFIX || 'DEX~',
   SESSION_ID: process.env.SESSION_ID || '',
   SESSION_DIR: process.env.SESSION_DIR || './data/session',
-    LOAD_EXTERNAL_PLUGINS: process.env.LOAD_EXTERNAL_PLUGINS === 'true',
+    LOAD_EXTERNAL_PLUGINS: process.env.LOAD_EXTERNAL_PLUGINS !== 'false',
   EXTERNAL_PLUGIN_DIR: process.env.EXTERNAL_PLUGIN_DIR || './plugins',
   AUDIT_FILE: process.env.AUDIT_FILE || './data/audit.jsonl',
   ENABLE_REMINDERS: process.env.ENABLE_REMINDERS !== 'false',
