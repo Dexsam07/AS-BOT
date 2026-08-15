@@ -17,6 +17,13 @@ AS-BOT is a modular WhatsApp bot built for dependable long-running operation. It
 
 > **Project channel:** [DEX SHYAM TECH](https://whatsapp.com/channel/0029VbBgXTsKwqSKZKy38w2o)
 
+<p align="center">
+  <a href="https://dex-sessions.zone.id/"><img src="https://img.shields.io/badge/Generate%20Session%20ID-Open%20Pairing%20Website-7c3aed?style=for-the-badge" alt="Open AS-BOT session pairing website"></a>
+  <a href="https://dex-sessions.zone.id/qr"><img src="https://img.shields.io/badge/QR%20Code-Open%20QR%20Pairing-2563eb?style=for-the-badge" alt="Open QR pairing page"></a>
+</p>
+
+> **Session pairing:** Click **Generate Session ID** to open the pairing website. Enter the WhatsApp number without the `+` sign, generate the session, and keep the resulting `DEX~<Base64-payload>` private. Never publish a real session ID in README, GitHub issues, screenshots, or chat.
+
 ## Highlights
 
 | Area | Capability |
