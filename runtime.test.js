@@ -108,11 +108,12 @@ test('interactive menu sends category list, quick buttons, and direct command ro
     reply: async (text) => { sent.push({ text }); }
   };
   await menu.handler({}, {}, [], context);
-  assert.equal(sent.length, 2);
-  assert.ok(Array.isArray(sent[0].sections));
-  assert.equal(sent[0].sections[0].rows[0].rowId, 'menu 1');
-  assert.equal(sent[1].buttons[0].buttonId, 'owner');
-  assert.equal(sent[1].buttons[1].buttonId, 'ping');
+  assert.equal(sent.length, 3);
+  assert.ok(sent[0].image);
+  assert.ok(Array.isArray(sent[1].sections));
+  assert.equal(sent[1].sections[0].rows[0].rowId, 'menu 1');
+  assert.equal(sent[2].buttons[0].buttonId, 'owner');
+  assert.equal(sent[2].buttons[1].buttonId, 'ping');
 
   sent.length = 0;
   const systemIndex = menu.commandGroups(context.registry).findIndex((group) => group.category === 'system');
