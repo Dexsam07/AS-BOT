@@ -70,7 +70,7 @@ async function main() {
         if (type !== 'notify') return;
         for (const message of messages || []) {
           if (!message?.message || message.key?.remoteJid === 'status@broadcast') continue;
-          try { await dispatchMessage({ sock, message, registry: loaded.registry, logger: console }); }
+          try { await dispatchMessage({ sock, message, registry: loaded.registry, logger: console, requestRestart: (reason = 'runtime-restart') => shutdown(reason, 1) }); }
           catch (error) { console.error(`[message-handler] ${error.message}`); }
         }
       });

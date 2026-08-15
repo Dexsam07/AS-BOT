@@ -24,3 +24,43 @@ test('built-in command directory loads standardized commands', async () => {
 });
 test('natural command registry does not require a dot prefix', () => { const map = buildCommandMap([{ name: 'ping', aliases: ['alive'], handler() {} }]); assert.ok(map.get('ping')); assert.ok(map.get('alive')); assert.equal(map.get('.ping'), undefined); });
 test('job queue executes a simple job', async () => assert.equal(await queue.submit('test', 'local', async () => 'ok'), 'ok'));
+
+test('owner update command applies GitHub update and requests restart', async () => {
+  const managerPath = require.resolve('./lib/update-manager');
+  const commandPath = require.resolve('./commands/system/update');
+  const previousManager = require.cache[managerPath];
+  const previousCommand = require.cache[commandPath];
+  const replies = [];
+  let restartReason = null;
+
+  require.cache[managerPath] = {
+    id: managerPath,
+    filename: managerPath,
+    loaded: true,
+    exports: {
+      status: async () => ({ supported: true, repo: 'Dexsam07/AS-BOT', branch: 'main', current: 'oldcommit', remote: 'newcommit', updateAvailable: true, dirty: false }),
+      applyUpdate: async () => ({ updated: true, previousCommit: 'oldcommit', nextCommit: 'newcommit', files: 2, packageChanged: false, message: 'Update validate aur apply ho gaya. Restart required hai.' }),
+      rollback: async () => ({ message: 'Rollback complete.', from: 'newcommit', to: 'oldcommit' })
+    }
+  };
+  delete require.cache[commandPath];
+
+  try {
+    const command = require(commandPath);
+    const context = {
+      reply: async (text) => { replies.push(text); },
+      requestRestart: (reason) => { restartReason = reason; }
+    };
+    const result = await command.handler({}, {}, ['now'], context);
+    await new Promise((resolve) => setTimeout(resolve, 1600));
+    assert.equal(result.updated, true);
+    assert.equal(replies.length, 2);
+    assert.match(replies[1], /newcommit/);
+    assert.equal(restartReason, 'github-update');
+  } finally {
+    if (previousManager) require.cache[managerPath] = previousManager;
+    else delete require.cache[managerPath];
+    if (previousCommand) require.cache[commandPath] = previousCommand;
+    else delete require.cache[commandPath];
+  }
+});
