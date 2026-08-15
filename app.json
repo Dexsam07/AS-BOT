@@ -1,0 +1,23 @@
+{
+  "name": "as-bot",
+  "description": "AS-BOT professional personal WhatsApp bot",
+  "repository": "",
+  "keywords": ["whatsapp", "bot", "as-bot", "dex-shyam-tech"],
+  "env": {
+    "BOT_NAME": { "description": "Bot display name", "value": "AS-BOT" },
+    "OWNER_NAME": { "description": "Owner display name", "value": "Shyam Chaudhari" },
+    "OWNER_NUMBER": { "description": "Owner WhatsApp number without +", "value": "917384287404" },
+    "PREFIX": { "description": "Command prefix", "value": "." },
+    "BOT_MODE": { "description": "private, public, groups, or inbox", "value": "private" },
+    "CHANNEL_NAME": { "description": "WhatsApp channel name", "value": "DEX SHYAM TECH" },
+    "CHANNEL_ID": { "description": "WhatsApp newsletter ID", "value": "120363406449026172@newsletter" },
+    "CHANNEL_LINK": { "description": "WhatsApp channel link", "value": "https://whatsapp.com/channel/0029VbBgXTsKwqSKZKy38w2o" },
+    "SESSION_PREFIX": { "description": "Required session prefix", "value": "DEX~" },
+    "SESSION_ID": { "description": "Secret DEX~<Base64> session; enter in hosting secret manager", "required": true },
+    "SESSION_DIR": { "description": "Persistent auth directory", "value": "/app/data/session" },
+    "LOAD_EXTERNAL_PLUGINS": { "description": "Enable external plugins only after review", "value": "false" },
+    "LOAD_LEGACY_PLUGINS": { "description": "Enable legacy adapter only after review", "value": "false" },
+    "ENABLE_MEMORY_GUARD": { "description": "Enable memory cleanup and queue pause", "value": "true" },
+    "ENABLE_REMINDERS": { "description": "Enable personal reminders", "value": "true" }
+  }
+}

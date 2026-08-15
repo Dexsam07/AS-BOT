@@ -1,0 +1,11 @@
+AS-BOT PREFIXLESS UPGRADE VALIDATION
+root_files=1154
+builtin_commands=8
+reference_plugins=1076
+zip_size=1683182 bytes
+checks: npm run check PASS; npm run check-session PASS; npm test 6/6 PASS; removed amon.js/malvin.js/legacy-loader.js PASS; main runtime legacy references PASS
+natural_commands: ping, help, alive, owner, status, settings, notes, todos, remind
+runtime_settings: owner-only WhatsApp settings show/set/reset
+archive_test:
+No errors detected in compressed data of /home/ubuntu/AS-BOT-prefixless-upgraded.zip.
+PASS

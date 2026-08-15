@@ -1,0 +1,20 @@
+AS-BOT DEX~ SESSION VALIDATION
+root_files=1105
+plugin_files=1078
+zip_size=1638257 bytes
+demo_result:
+{
+  "valid": true,
+  "prefix": "DEX~",
+  "sessionName": "DEX~-DEMO-NOT-AUTH",
+  "kind": "json",
+  "fingerprint": "23cf9af93a520fa4",
+  "demo": true
+}
+wrong_prefix_result:
+INVALID_SESSION: Session rejected: name must start with DEX~.
+missing_session_result:
+[startup-error] SESSION_ID is missing. Put the Base64 session in the environment, never in source code.
+archive_test:
+No errors detected in compressed data of /home/ubuntu/AS-BOT-DEX-session-final.zip.
+PASS

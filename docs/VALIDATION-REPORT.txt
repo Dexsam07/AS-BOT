@@ -1,0 +1,36 @@
+AS-BOT STRUCTURE VALIDATION
+root_files=1098
+plugin_files=1078
+asset_files=1
+data_files=1
+lib_files=1
+zip_size=1628976 bytes
+index_output:
+AS-BOT structure is ready.
+Owner: Shyam Chaudhari
+Prefix: .
+Mode: private
+Channel: DEX SHYAM TECH
+
+required_root_entries:
+PASS assets
+PASS data
+PASS lib
+PASS plugins
+PASS .gitignore
+PASS app.json
+PASS Dockerfile
+PASS heroku.yml
+PASS index.js
+PASS LICENSE
+PASS package.json
+PASS README.md
+PASS setting.js
+PASS settings.js
+PASS shyam.js
+PASS shyam.json
+PASS config.js
+
+archive_test:
+No errors detected in compressed data of /home/ubuntu/AS-BOT-structure-final.zip.
+PASS

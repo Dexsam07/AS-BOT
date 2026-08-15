@@ -1,0 +1,22 @@
+services:
+  as-bot:
+    build: .
+    container_name: as-bot
+    restart: unless-stopped
+    init: true
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      SESSION_DIR: /app/data/session
+      AUDIT_FILE: /app/data/audit.jsonl
+    volumes:
+      - asbot-data:/app/data
+      - asbot-temp:/app/temp
+      - asbot-logs:/app/logs
+    stop_grace_period: 30s
+
+volumes:
+  asbot-data:
+  asbot-temp:
+  asbot-logs:
