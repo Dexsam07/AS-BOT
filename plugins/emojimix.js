@@ -23,8 +23,13 @@ export default {
                 return;
             }
             const [emoji1, emoji2] = args[0].split('+').map((e) => e.trim());
+            const apiKey = process.env.TENOR_API_KEY || '';
+            if (!apiKey) {
+                await sock.sendMessage(chatId, { text: '❌ TENOR_API_KEY host environment mein configured nahi hai.' }, { quoted: message });
+                return;
+            }
             const url = `https://tenor.googleapis.com/v2/featured?` +
-                `key=AIzaSyAyimkuYQYF_FXVALexPuGQctUWRURdCYQ` +
+                `key=${encodeURIComponent(apiKey)}` +
                 `&contentfilter=high&media_filter=png_transparent` +
                 `&component=proactive&collection=emoji_kitchen_v5` +
                 `&q=${encodeURIComponent(emoji1)}_${encodeURIComponent(emoji2)}`;

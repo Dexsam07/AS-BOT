@@ -4,7 +4,7 @@ const path = require('node:path');
 const config = require('./config');
 const { createDemoSessionId, validateSessionId } = require('./lib/session-validator');
 const { authorize } = require('./lib/policy-engine');
-const { loadDirectory } = require('./lib/plugin-loader');
+const { loadDirectory, loadManifest, loadPlugins, loadFile } = require('./lib/plugin-loader');
 const queue = require('./lib/job-queue');
 const { buildCommandMap } = require('./lib/command-router');
 
@@ -21,6 +21,25 @@ test('owner authorization does not bypass WhatsApp bot-admin capability', async 
 test('plugin core directory loads standardized commands', async () => {
   const result = await loadDirectory(path.join(__dirname, 'plugins', 'core'), { logger: { warn() {} }, source: 'core' });
   assert.ok(result.registry.length >= 7); assert.ok(result.registry.some((item) => item.name === 'help')); assert.ok(result.registry.some((item) => item.name === 'settings'));
+});
+test('lazy plugin manifest registers metadata without eager imports', async () => {
+  const manifestPath = path.join(__dirname, 'plugins', 'plugin-manifest.json');
+  const manifest = await loadManifest(manifestPath, { logger: { warn() {} }, source: 'plugins', rootDir: path.join(__dirname, 'plugins') });
+  assert.equal(manifest.skipped.length, 0);
+  assert.equal(manifest.registry.length, 873);
+  assert.ok(manifest.registry.every((item) => typeof item.handler === 'function'));
+  const loaded = await loadPlugins({ pluginsDir: path.join(__dirname, 'plugins', 'core'), pluginDirs: [path.join(__dirname, 'plugins')], includeExternal: true, manifestPath, lazyExternal: true, primarySource: 'core', externalSource: 'plugins', logger: { warn() {} } });
+  assert.ok(loaded.registry.length >= 650);
+  assert.ok(loaded.registry.length < manifest.registry.length + 10);
+  assert.ok(loaded.registry.some((item) => item.name === 'menu' && item.source === 'core'));
+});
+test('repaired channel metadata plugin loads through the current contract', async () => {
+  const result = await loadFile(path.join(__dirname, 'plugins', 'tools-cekidch.js'), { logger: { warn() {} }, source: 'plugins' });
+  const command = result.registry.find((item) => item.name === 'cekidch');
+  assert.ok(command);
+  let output = '';
+  await command.handler({}, { key: { id: 'test' } }, [], { chatId: '123@s.whatsapp.net', reply: async (text) => { output = text; } });
+  assert.match(output, /cekidch/);
 });
 test('natural command registry does not require a dot prefix', () => { const map = buildCommandMap([{ name: 'ping', aliases: ['alive'], handler() {} }]); assert.ok(map.get('ping')); assert.ok(map.get('alive')); assert.equal(map.get('.ping'), undefined); });
 test('job queue executes a simple job', async () => assert.equal(await queue.submit('test', 'local', async () => 'ok'), 'ok'));

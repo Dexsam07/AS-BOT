@@ -37,6 +37,9 @@ async function loadRegistry(logger = console) {
     includeExternal: config.LOAD_EXTERNAL_PLUGINS,
     primarySource: 'core',
     externalSource: 'plugins',
+    manifestPath: path.resolve(config.PLUGIN_MANIFEST),
+    lazyExternal: config.PLUGIN_LAZY_LOAD,
+    fallbackEager: config.PLUGIN_LOAD_FALLBACK_EAGER,
     logger
   });
   return { registry: modern.registry, modern };

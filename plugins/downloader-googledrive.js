@@ -29,9 +29,10 @@ let handler = async (m, { args, usedPrefix, command, conn }) => {
   if (!fileId) throw 'URL Google Drive tidak valid!'
 
   try {
-    const apiKey = 'AIzaSyAA9ERw-9LZVEohRYtCWka_TQc6oXmvcVU'
-    const metaUrl = `https://www.googleapis.com/drive/v3/files/${fileId}?fields=name,size,mimeType&key=${apiKey}`
-    const downloadUrl = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media&key=${apiKey}`
+    const apiKey = process.env.GOOGLE_DRIVE_API_KEY || '';
+    if (!apiKey) throw 'GOOGLE_DRIVE_API_KEY is not configured';
+    const metaUrl = `https://www.googleapis.com/drive/v3/files/${fileId}?fields=name,size,mimeType&key=${encodeURIComponent(apiKey)}`;
+    const downloadUrl = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media&key=${encodeURIComponent(apiKey)}`;
 
     const metadata = await axios.get(metaUrl)
     const { name, size, mimeType } = metadata.data

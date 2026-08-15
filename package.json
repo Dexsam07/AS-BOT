@@ -14,6 +14,7 @@
     "check": "node scripts/check-syntax.js",
     "check-session": "node scripts/check-session.js --demo",
     "healthcheck": "node scripts/healthcheck.js",
+    "build:plugin-manifest": "node --max-old-space-size=1536 scripts/build-plugin-manifest.js",
     "test": "node --test runtime.test.js",
     "install:panel": "npm install --legacy-peer-deps",
     "install:force": "npm install --force",

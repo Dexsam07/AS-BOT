@@ -109,9 +109,9 @@ The most important public configuration defaults are shown below. Keep real sess
 
 ## Plugin compatibility
 
-The `plugins/` directory is the primary command source. Protected controls live under `plugins/core/` and load first; the remaining plugin tree contains compatible standardized and legacy command modules. The loader accepts modern exports and the common `cmd`, `bandah`, `gmd`, `malvin`, `amon`, and `shyam` registration APIs. Compatible commands are registered into the current router and appear in the live menu. Duplicate names are ignored in favor of protected core controls.
+The `plugins/` directory is the primary command source. Protected controls live under `plugins/core/` and load first; the remaining plugin tree contains compatible standardized and legacy command modules. Production startup reads the checked-in `plugins/plugin-manifest.json` and creates lazy handlers; a plugin file is imported only when its command is actually used. The loader accepts modern exports and the common `cmd`, `bandah`, `gmd`, `malvin`, `amon`, and `shyam` registration APIs. Compatible commands are registered into the current router and appear in the live menu. Duplicate names are ignored in favor of protected core controls.
 
-Plugin loading is fault-tolerant. A file that depends on a removed legacy module, an unavailable optional package, or a background-only contract is skipped and recorded in startup logs instead of crashing the bot. The compatibility audit included with the project registered 848 commands with declared dependencies available; the exact number can vary when optional packages or provider credentials differ on a host.
+Plugin loading is fault-tolerant. A file that depends on a removed legacy module, an unavailable optional package, invalid syntax, or a background-only contract is excluded from the manifest or skipped at command execution instead of being imported during startup. This prevents the entire plugin tree from exhausting memory on small hosting plans. The compatibility audit includes 873 external plugin command registrations. After protected-core priority and alias deduplication, the current runtime exposes 707 unique external plugin commands plus 10 protected core commands. The exact number can vary when optional packages, provider credentials, or plugin files differ on a host.
 
 ## GitHub self-update
 

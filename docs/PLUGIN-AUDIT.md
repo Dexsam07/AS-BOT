@@ -1,7 +1,7 @@
 # Plugin audit report
 
-Non-helper JavaScript plugin count: 1060
-All JavaScript file count: 1076
+Non-helper JavaScript plugin count: 1070
+All JavaScript file count: 1086
 
 Representative plugin files:
 plugins/1917.js
@@ -272,6 +272,6 @@ plugins/panel-listpanel.js
 
 ## Dependency-backed audit result
 
-With the declared dependencies installed, the plugin-primary compatibility loader registered **848 commands** from the plugins directory and skipped **708 file-level registrations/imports**. The loaded commands are available to the live menu and router. The skipped set contains files that depend on removed legacy modules, unavailable third-party packages, or non-command background plugins. These files remain disabled rather than being allowed to crash the bot. Some legacy files also start their own timers/listeners at import time, so the audit process may not exit by itself; production startup remains a supervised long-running process.
+With the declared dependencies installed, the plugin-primary compatibility loader produced **873 external command registrations** in the checked-in manifest. After protected-core priority and duplicate/alias filtering, the current runtime exposes **707 unique external plugin commands** plus the protected core controls. The loaded commands are available to the live menu and router. The skipped set contains files that depend on removed legacy modules, unavailable third-party packages, or non-command background plugins. These files remain disabled rather than being allowed to crash the bot. Some legacy files also start their own timers/listeners at import time, so the audit process may not exit by itself; production startup remains a supervised long-running process.
 
-The runtime now loads protected controls from `plugins/core/` first and then enables all remaining plugins that successfully register through the supported `cmd`, `bandah`, `gmd`, `malvin`, `amon`, or `shyam` compatibility APIs. Duplicate command names are ignored in favor of the first registered core command, protecting built-in security and owner controls. Incompatible files are reported in startup logs.
+The runtime now loads protected controls from `plugins/core/` first and reads external command metadata from `plugins/plugin-manifest.json`. External handlers are lazy-loaded only when used. Duplicate command names are ignored in favor of the first registered core command, protecting built-in security and owner controls. Unsupported files are excluded from the manifest or reported at load time without blocking startup.

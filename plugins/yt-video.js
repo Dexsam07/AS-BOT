@@ -3,7 +3,9 @@ const axios = require("axios");
 const { cmd } = require("../command");
 
 async function searchYouTube(query) {
-    const url = "https://www.youtube.com/youtubei/v1/search?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW4";
+    const apiKey = process.env.YOUTUBE_API_KEY || '';
+    if (!apiKey) throw new Error('YOUTUBE_API_KEY is not configured');
+    const url = `https://www.youtube.com/youtubei/v1/search?key=${encodeURIComponent(apiKey)}`;
 
     const postData = JSON.stringify({
         query: query,

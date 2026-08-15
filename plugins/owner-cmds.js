@@ -38,6 +38,8 @@ async function ownerReact(conn, from, sender, key) {
             });
         }
     } catch (e) {}
+}
+
 function toggleSetting(settingName, value) {
     const status = value?.toLowerCase();
     const p1 = require('path').join(__dirname, '../assets/settings.json');
@@ -486,92 +488,7 @@ async (conn, mek, m, { from, args, isOwner, reply }) => {
 });
 
 //--------------------------------------------
-// CUSTOM REACT
-//--------------------------------------------
-cmd({
-    pattern: "customreact",
-    alias: ["custom_react", "creact"],
-    desc: "Enable or disable custom reactions",
-    category: "misc",
-    filename: __filename
-},    
-async (conn, mek, m, { from, args, isOwner, reply }) => {
-    if (!isOwner) return reply("*📛 Only the owner can use this command!*");
-    
-    const status = args[0]?.toLowerCase();
-    const senderNumber = m.sender.split('@')[0];
-    const isOwnerNumber = isOwner(senderNumber);
-    
-    if (status === "on") {
-        config.CUSTOM_REACT = "true";
-        saveConfig();
-        try {
-            const settingsPath = './settings.json';
-            let settings = {};
-            if (fs.existsSync(settingsPath)) {
-                settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
-            }
-            settings.CUSTOM_REACT_ENABLED = "true";
-            fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
-        } catch (e) {
-            fs.writeFileSync('./settings.json', JSON.stringify({ CUSTOM_REACT_ENABLED: "true" }, null, 2));
-        }
-        if (isOwnerNumber) {
-            await conn.sendMessage(from, {
-                react: { text: OWNER_EMOJI, key: mek.key }
-            });
-        }
-        await reply(`❤️ *CUSTOM REACT IS NOW ENABLED.*\n\n✅ Bot will auto-react to your channel posts!\n📊 ${config.REACT_MIN || 50}-${config.REACT_MAX || 100} reactions per post`);
-    } else if (status === "off") {
-        config.CUSTOM_REACT = "false";
-        saveConfig();
-        try {
-            const settingsPath = './settings.json';
-            let settings = {};
-            if (fs.existsSync(settingsPath)) {
-                settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
-            }
-            settings.CUSTOM_REACT_ENABLED = "false";
-            fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
-        } catch (e) {
-            fs.writeFileSync('./settings.json', JSON.stringify({ CUSTOM_REACT_ENABLED: "false" }, null, 2));
-        }
-        if (isOwnerNumber) {
-            await conn.sendMessage(from, {
-                react: { text: OWNER_EMOJI, key: mek.key }
-            });
-        }
-        await reply(`❌ *CUSTOM REACT IS NOW DISABLED.*`);
-    } else if (status === "status") {
-        let fileStatus = config.CUSTOM_REACT === "true" ? "✅ ON" : "❌ OFF";
-        let settingsStatus = "❌ OFF";
-        try {
-            if (fs.existsSync('./settings.json')) {
-                const settings = JSON.parse(fs.readFileSync('./settings.json', 'utf8'));
-                settingsStatus = settings.CUSTOM_REACT_ENABLED === "true" ? "✅ ON" : "❌ OFF";
-            }
-        } catch (e) {}
-        const currentStatus = (config.CUSTOM_REACT === "true" || settingsStatus === "✅ ON") ? "✅ ON" : "❌ OFF";
-        if (isOwnerNumber) {
-            await conn.sendMessage(from, {
-                react: { text: OWNER_EMOJI, key: mek.key }
-            });
-        }
-        await reply(`📊 *CUSTOM REACT STATUS*\n\n📢 Status: ${currentStatus}\n❤️ Emoji: ${config.REACT_EMOJI || '❤️'}\n📊 Range: ${config.REACT_MIN || 50} - ${config.REACT_MAX || 100}`);
-    } else if (status === "emoji" && args[1]) {
-        config.REACT_EMOJI = args[1];
-        saveConfig();
-        if (isOwnerNumber) {
-            await conn.sendMessage(from, {
-                react: { text: OWNER_EMOJI, key: mek.key }
-            });
-        }
-        await reply(`✅ React emoji changed to *${args[1]}*`);
-    } else if ((status === "count" || status === "range") && args[1] && args[2]) {
-        const min = parseInt(args[1]);
-        const max = parseInt(args[2]);
-        if (!isNaN(min) && !isNaN(max) && min > 0 && max > min) {
-            config.REACT_MIN = min;
+
 //--------------------------------------------
 // CUSTOM REACT - FIXED DUAL SYSTEM
 //--------------------------------------------
@@ -660,105 +577,6 @@ async (conn, mek, m, { from, args, isOwner, isCreator, reply }) => {
         await reply(`Use:.heartreact on / off`);
     }
 });
-    // ============ OFF ============
-    else if (status === "off") {
-        config.CUSTOM_REACT = "false";
-        saveConfig();
-        
-        try {
-            const settingsPath = './settings.json';
-            let settings = {};
-            if (fs.existsSync(settingsPath)) {
-                settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
-            }
-            settings.CUSTOM_REACT_ENABLED = "false";
-            fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
-        } catch (e) {
-            fs.writeFileSync('./settings.json', JSON.stringify({ CUSTOM_REACT_ENABLED: "false" }, null, 2));
-        }
-        
-        if (isOwnerNumber) {
-            await conn.sendMessage(from, {
-                react: { text: OWNER_EMOJI, key: mek.key }
-            });
-        }
-        
-        await reply(`❌ *HEART REACT IS NOW DISABLED.*\n\n✅ Bot will NOT auto-react to channel posts.\nTo enable: .heartreact on`);
-    }
-    
-    // ============ STATUS ============
-    else if (status === "status") {
-        let fileStatus = config.CUSTOM_REACT === "true" ? "✅ ON" : "❌ OFF";
-        let settingsStatus = "❌ OFF";
-        
-        try {
-            if (fs.existsSync('./settings.json')) {
-                const settings = JSON.parse(fs.readFileSync('./settings.json', 'utf8'));
-                settingsStatus = settings.CUSTOM_REACT_ENABLED === "true" ? "✅ ON" : "❌ OFF";
-            }
-        } catch (e) {}
-        
-        const currentStatus = (config.CUSTOM_REACT === "true" || settingsStatus === "✅ ON") ? "✅ ON" : "❌ OFF";
-        
-        if (isOwnerNumber) {
-            await conn.sendMessage(from, {
-                react: { text: OWNER_EMOJI, key: mek.key }
-            });
-        }
-        
-        await reply(`📊 *HEART REACT STATUS*\n\n📢 Status: ${currentStatus}\n📁 Config: ${fileStatus}\n📄 Settings.json: ${settingsStatus}\n❤️ Emoji: ${config.REACT_EMOJI || '❤️'}\n📊 Range: ${config.REACT_MIN || 50} - ${config.REACT_MAX || 100}`);
-    }
-    
-    // ============ EMOJI ============
-    else if (status === "emoji" && args[1]) {
-        config.REACT_EMOJI = args[1];
-        saveConfig();
-        
-        if (isOwnerNumber) {
-            await conn.sendMessage(from, {
-                react: { text: OWNER_EMOJI, key: mek.key }
-            });
-        }
-        
-        await reply(`✅ React emoji changed to *${args[1]}*`);
-    }
-    
-    // ============ COUNT ============
-    else if ((status === "count" || status === "range") && args[1] && args[2]) {
-        const min = parseInt(args[1]);
-        const max = parseInt(args[2]);
-        
-        if (!isNaN(min) && !isNaN(max) && min > 0 && max > min) {
-            config.REACT_MIN = min;
-            config.REACT_MAX = max;
-            saveConfig();
-            
-            if (isOwnerNumber) {
-                await conn.sendMessage(from, {
-                    react: { text: OWNER_EMOJI, key: mek.key }
-                });
-            }
-            
-            await reply(`✅ Range updated!\n📊 New Range: ${min} - ${max} reactions`);
-        } else {
-            await reply(`⚠️ Invalid range. Use: .heartreact count 30 80`);
-        }
-    }
-    
-    // ============ HELP ============
-    else {
-        const currentStatus = config.CUSTOM_REACT === "true" ? "✅ ON" : "❌ OFF";
-        
-        if (isOwnerNumber) {
-            await conn.sendMessage(from, {
-                react: { text: OWNER_EMOJI, key: mek.key }
-            });
-        }
-        
-        await reply(`*❤️ HEART REACT COMMANDS*\n\n▸ .heartreact on - Enable auto-react\n▸ .heartreact off - Disable auto-react\n▸ .heartreact status - Check status\n▸ .heartreact emoji ❤️ - Change emoji\n▸ .heartreact count 30 80 - Change range\n\n*Current Status:* ${currentStatus}\n*Emoji:* ${config.REACT_EMOJI || '❤️'}\n*Range:* ${config.REACT_MIN || 50} - ${config.REACT_MAX || 100}\n\n💡 *Also works with:*\n▸ .creact on/off\n▸ .customreact on/off`);
-    }
-});
-
 //--------------------------------------------
 // ANTI LINK
 //--------------------------------------------

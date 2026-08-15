@@ -8,7 +8,10 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
   if (emojis.length < 2) throw 'Masukkan minimal 2 emoji untuk di-mix';
   if (emojis.length > 2) throw 'Max 2 emoji untuk di-mix';
 
-  const anu = await (await fetch(`https://tenor.googleapis.com/v2/featured?key=AIzaSyAyimkuYQYF_FXVALexPuGQctUWRURdCYQ&contentfilter=high&media_filter=png_transparent&component=proactive&collection=emoji_kitchen_v5&q=${encodeURIComponent(emojis.join('_'))}`)).json();
+  const apiKey = process.env.TENOR_API_KEY || '';
+  if (!apiKey) throw 'TENOR_API_KEY is not configured';
+  const tenorUrl = `https://tenor.googleapis.com/v2/featured?key=${encodeURIComponent(apiKey)}&contentfilter=high&media_filter=png_transparent&component=proactive&collection=emoji_kitchen_v5&q=${encodeURIComponent(emojis.join('_'))}`;
+  const anu = await (await fetch(tenorUrl)).json();
 
   if (!anu.results[0]) throw 'Kombinasi Emojimix Tidak Ditemukan';
 

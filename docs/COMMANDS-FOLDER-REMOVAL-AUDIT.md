@@ -10,4 +10,4 @@ Removing `commands/` without changing the loader would remove the current safety
 
 The migration is complete. The former `commands/` directory has been removed. Its protected controls now live under `plugins/core/` and load first, while the rest of `plugins/` is the primary external command source. Relative imports were updated for the new location, and duplicate command names resolve in favor of the protected core registry.
 
-The latest dependency-backed audit registered 848 compatible commands. Files that cannot load because of invalid syntax, removed modules, missing optional packages, or unsupported contracts are skipped with diagnostics rather than stopping the runtime.
+The latest dependency-backed audit produced 873 external command registrations; duplicate and alias protection exposes 707 unique external plugin commands plus the protected core controls. Files that cannot load because of removed modules, missing optional packages, or unsupported contracts are excluded from the manifest or skipped with diagnostics rather than stopping the runtime. Production startup uses lazy handlers and does not import the complete plugin tree.
