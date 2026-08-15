@@ -1,48 +1,62 @@
-# AS-BOT — Production Personal WhatsApp Bot
+# AS-BOT
 
-AS-BOT **Shyam Chaudhari** ka personal, modular aur production-oriented WhatsApp bot hai. Is version mein connection lifecycle, DEX~ session gate, built-in personal commands, owner policy, group-admin capability checks, audit logs, rate limits, job queue, memory guard, health state aur persistent-hosting files included hain.
+<p align="center">
+  <img src="assets/as-bot-profile.png" alt="AS-BOT professional bot artwork" width="420">
+</p>
 
-> **Important:** WhatsApp group permissions bypass nahi ki ja sakti. Owner command ko authorize kiya ja sakta hai, lekin kick, delete, promote, demote aur group settings jaise server-side actions ke liye bot ka group admin hona mandatory hai.
+<p align="center"><strong>Production-oriented WhatsApp automation framework with a modular runtime, interactive menu, plugin compatibility, persistent storage, and GitHub self-update.</strong></p>
 
-## Identity
+<p align="center">
+  <a href="https://github.com/Dexsam07/AS-BOT/actions"><img src="https://img.shields.io/badge/runtime-Node.js%2020%2B-339933?logo=node.js&logoColor=white" alt="Node.js 20+"></a>
+  <a href="https://github.com/Dexsam07/AS-BOT"><img src="https://img.shields.io/badge/repository-public-181717?logo=github&logoColor=white" alt="Public GitHub repository"></a>
+  <img src="https://img.shields.io/badge/commands-prefixless-2563eb" alt="Prefixless commands">
+  <img src="https://img.shields.io/badge/session-DEX~-0ea5e9" alt="DEX session gate">
+</p>
 
-| Field | Value |
+AS-BOT is a modular WhatsApp bot built for dependable long-running operation. It combines a Baileys connection layer with guarded command authorization, persistent local data, runtime health monitoring, a queue for heavier work, compatible legacy plugin loading, an interactive command menu, and an owner-controlled GitHub update workflow.
+
+> **Project channel:** [DEX SHYAM TECH](https://whatsapp.com/channel/0029VbBgXTsKwqSKZKy38w2o)
+
+## Highlights
+
+| Area | Capability |
 |---|---|
-| Bot name | **AS-BOT** |
-| Owner | **Shyam Chaudhari** |
-| Owner number | **917384287404** |
-| Channel name | **DEX SHYAM TECH** |
-| Channel ID | **120363406449026172@newsletter** |
-| Channel link | **https://whatsapp.com/channel/0029VbBgXTsKwqSKZKy38w2o** |
-| Session format | **DEX~<Base64>** |
-| Command mode | **Natural commands, no prefix** |
+| Command experience | Natural prefixless commands such as `help`, `menu`, `alive`, `status`, and `update now` |
+| Interactive menu | Clickable category lists, command rows, quick owner/ping actions, branded image header, and text fallback |
+| Session security | Exact `DEX~<Base64-payload>` validation before startup |
+| Authorization | Separate user authorization from WhatsApp bot-admin capability checks |
+| Plugin system | Compatibility adapter for standardized exports and legacy `cmd`, `bandah`, `gmd`, `malvin`, `amon`, and `shyam` registrations |
+| Reliability | Reconnect handling, atomic writes, audit events, rate limiting, queue limits, memory guard, health state, and graceful shutdown |
+| Self-update | Owner-only `update status`, `update now`, and `update rollback` from the configured GitHub repository |
+| Hosting | Docker Compose and PM2 configurations with persistent runtime data |
 
-## Main folders
+## Command examples
+
+Commands do not require a dot prefix.
 
 ```text
-AS-BOT/
-├── assets/                     # Static media and bot assets
-├── commands/                   # Built-in approved commands
-│   ├── system/                 # help, alive, owner, status
-│   ├── daily/                  # notes, todo, reminders
-│   └── moderation/              # guarded group actions
-├── data/                       # Persistent runtime data and auth state
-├── lib/                        # Connection, policy, storage, queue, metrics, memory
-├── plugins/                    # Existing 1,078 reference plugins; disabled by default
-├── scripts/                    # Validation and health scripts
-├── test/                       # Offline runtime tests
-├── docs/                       # Architecture and hosting runbooks
-├── index.js                    # Main production entry point
-├── config.js                   # Central configuration
-├── package.json                # Dependencies and production scripts
-├── Dockerfile                 # Persistent container deployment
-├── docker-compose.yml          # Restart policy and persistent volumes
-└── ecosystem.config.cjs        # PM2 process supervisor config
+help
+menu
+menu 1
+alive
+owner
+status
+note add prepare deployment checklist
+notes
+todo add verify backup
+todos
+remind 30 check the group
+settings show
+update status
+update now
+update rollback
 ```
 
-## Session format
+The interactive `menu` command shows live loaded categories and command counts. Selecting a category opens its command list, and selecting a command sends the normal command ID back through the same authorization and rate-limit pipeline. If a WhatsApp client does not support interactive messages, AS-BOT falls back to text navigation with `menu 1`, `menu 2`, and `menu 0`.
 
-Session variable ka exact format hai:
+## Session configuration
+
+The runtime accepts only the configured session prefix. The payload must be Base64 encoded and must not be shared publicly.
 
 ```env
 SESSION_PREFIX=DEX~
@@ -50,80 +64,124 @@ SESSION_ID=DEX~<Base64-payload>
 SESSION_DIR=./data/session
 ```
 
-Runtime sabse pehle exact `DEX~` prefix verify karta hai, phir remaining part ko canonical Base64 ke roop mein validate karta hai. Wrong prefix ya invalid Base64 startup par reject hota hai. Agar decoded payload Baileys `creds.json` jaisa valid object ho aur local auth state missing ho, runtime usse local auth state mein import karne ki koshish karta hai. Real session ID ZIP, GitHub, screenshot ya chat mein share nahi karna chahiye.
+The session directory, `.env`, audit data, runtime settings, and personal data are local runtime state. They are not part of the public source workflow and must remain on persistent host storage.
 
-## Local setup
+## Quick start
 
 ```bash
+git clone https://github.com/Dexsam07/AS-BOT.git
+cd AS-BOT
 cp .env.example .env
-# .env mein real SESSION_ID=DEX~<Base64-payload> set karo
+# Set SESSION_ID=DEX~<Base64-payload> in .env
 npm install --legacy-peer-deps
 npm run check
-npm run check-session
+npm test
 npm start
 ```
 
-`npm run check-session` demo token validate karta hai aur WhatsApp login nahi karta. `npm start` valid session aur installed dependencies ke bina production connection start nahi karega.
+The demo session check can be run without connecting to WhatsApp:
 
-## Built-in commands
-
-| Command | Purpose |
-|---|---|
-| `help` / `menu` | Active command list |
-| `alive` / `ping` | Uptime, memory, queue aur runtime health |
-| `owner` | Bot owner aur channel information |
-| `status` | Owner-only detailed diagnostics |
-| `note add <text>` | Personal note save |
-| `notes` | Personal notes list |
-| `todo add <text>` | Personal todo save |
-| `todos` | Todo list |
-| `todo done <id>` | Todo complete |
-| `remind <minutes> <text>` | Personal reminder |
-| `kick @user` | Owner-requested guarded action; bot admin required |
-
-## Plugin strategy
-
-Existing `plugins/` ke 1,078 files ko default se activate nahi kiya gaya hai, kyunki unmein multiple runtime contracts aur optional dependencies hain. Built-in approved commands `commands/` se always load hote hain. External plugins ko review ke baad enable karo:
-
-```env
-LOAD_EXTERNAL_PLUGINS=true
+```bash
+npm run check-session
 ```
 
-Ye flags tabhi enable karo jab selected plugins ke dependencies aur permissions test ho chuke hon.
+## Configuration
 
-## Permission model
+The most important public configuration defaults are shown below. Keep real session values and provider keys only in the host environment.
 
-AS-BOT **user authorization** aur **bot capability** ko alag check karta hai. Owner hone par aap owner-only command authorize kar sakte ho, lekin WhatsApp server action ke liye bot-admin status alag se verify hota hai. Missing bot-admin permission par fake success nahi diya jata; clear denial aur audit event generate hota hai.
+| Variable | Purpose | Example |
+|---|---|---|
+| `BOT_NAME` | Runtime display name | `AS-BOT` |
+| `BOT_MODE` | Runtime mode | `private` |
+| `TIMEZONE` | Menu and reminder timezone | `Asia/Kolkata` |
+| `CHANNEL_NAME` | Project channel label | `DEX SHYAM TECH` |
+| `LOAD_EXTERNAL_PLUGINS` | Enable compatible plugins | `true` |
+| `MENU_IMAGE_URL` | Optional external menu image; bundled image is used by default | `https://example.com/menu.png` |
+| `UPDATE_REPO` | Self-update repository | `Dexsam07/AS-BOT` |
+| `UPDATE_BRANCH` | Self-update branch | `main` |
 
-## Reliability features
+## Plugin compatibility
 
-Runtime mein exponential reconnect, local auth persistence, graceful shutdown, atomic JSON writes, audit JSONL, per-chat rate limiting, job queue, memory-pressure cleanup, heavy-job pause, health heartbeat aur Docker/PM2 restart support included hai. Ye features long-running operation ko improve karte hain, lekin kisi hosting provider ke downtime ya WhatsApp policy changes ko eliminate nahi kar sakte.
+The `plugins/` directory contains reference and legacy command modules. The loader accepts modern standardized exports as well as the common registration APIs used by the included plugin collection. Compatible commands are registered into the current router and automatically appear in the live menu. Duplicate command names are ignored in favor of the first registered command so that built-in safety and owner controls remain authoritative.
 
-## Non-stop hosting
+Plugin loading is fault-tolerant. A file that depends on a removed legacy module, an unavailable optional package, or a background-only contract is skipped and recorded in startup logs instead of crashing the bot. The compatibility audit included with the project registered 838 commands with declared dependencies available; the exact number can vary when optional packages or provider credentials differ on a host.
 
-Recommended setup Docker Compose ya PM2 wali persistent Linux hosting hai. Docker deployment:
+## GitHub self-update
+
+The production host should be a Git clone of this repository. After the first setup, future code releases can be applied from WhatsApp without uploading a ZIP or entering the session again.
+
+```text
+update status
+update now
+update rollback
+```
+
+`update now` checks the clean Git working tree, fetches the configured branch, validates the candidate revision in a temporary worktree, protects `.env` and runtime data, applies the update, and requests a supervisor restart. The update command is owner-only. A dirty working tree, non-fast-forward history, protected runtime changes, or failed validation blocks the update.
+
+Read [docs/GITHUB-SELF-UPDATE.md](docs/GITHUB-SELF-UPDATE.md) for the full workflow.
+
+## Persistent hosting
+
+### Docker Compose
 
 ```bash
 docker compose up -d --build
 docker compose logs -f as-bot
 ```
 
-PM2 deployment:
+### PM2
 
 ```bash
 npm install --omit=dev --legacy-peer-deps
-npm install -g pm2
+npm install --global pm2
 pm2 start ecosystem.config.cjs
 pm2 save
 pm2 startup
 ```
 
-`docs/NONSTOP-HOSTING.md` mein persistent volumes, secrets, health state, restart behavior aur update procedure diya gaya hai. `docs/PREFIXLESS-CONTROL.md` mein natural commands aur WhatsApp se live settings change karne ka guide hai. 24/7 operation ke liye hosting ko sleep mode mein nahi hona chahiye, outbound network allowed hona chahiye aur `/app/data` persistent volume par mount hona chahiye.
+Persistent hosting must keep the `data/` directory mounted across restarts. The process supervisor should use an automatic restart policy, and the host must allow outbound network access for the WhatsApp connection and GitHub update checks.
 
-## Security
+## Repository layout
 
-`.env`, session directory, API keys, auth state, audit logs aur personal data ko public repository ya ZIP mein commit mat karo. `SESSION_ID` Base64 encoded hone ke bawajood encryption nahi hai.
+```text
+AS-BOT/
+├── assets/                     # Branded bot artwork and static assets
+├── commands/                   # Built-in approved commands
+│   ├── system/                 # Menu, help, status, settings, update
+│   ├── daily/                  # Notes, todos, reminders
+│   └── moderation/              # Guarded group actions
+├── data/                       # Persistent runtime state; keep private
+├── lib/                        # Connection, policy, storage, queue, metrics, plugins
+├── plugins/                    # Compatible legacy and reference plugins
+├── scripts/                    # Syntax, session, health, and audit utilities
+├── docs/                       # Hosting, update, menu, and validation guides
+├── index.js                    # Production entry point
+├── config.js                   # Central runtime configuration
+├── setting.js                  # Legacy-compatible settings facade
+├── Dockerfile                  # Container image definition
+├── docker-compose.yml          # Persistent container deployment
+└── ecosystem.config.cjs        # PM2 process configuration
+```
 
-## Development roadmap
+## Security notes
 
-Pehle built-in commands aur connection verify karo. Uske baad selected plugins ko one-by-one migrate karo. AI, media, downloader, advanced moderation aur provider fallback modules ko queue, timeout, cache aur audit policy ke through add karna chahiye; saare plugins ek saath activate karna production-safe nahi hai.
+Never commit `.env`, session credentials, provider keys, personal data, audit logs, or local auth state. Base64 is an encoding format, not encryption. Group actions remain subject to WhatsApp permissions: owner authorization does not make the bot an administrator. Commands such as kick, delete, promote, demote, or group settings require the bot to have the relevant group capability.
+
+## Development checks
+
+```bash
+npm run check
+npm test
+npm run check-session
+```
+
+Before publishing a change, run the checks locally, keep secrets outside Git, and publish the change directly to the repository `main` branch. The project is distributed under the license included in `LICENSE`.
+
+## Documentation
+
+- [Interactive menu](docs/INTERACTIVE-MENU.md)
+- [GitHub self-update](docs/GITHUB-SELF-UPDATE.md)
+- [Non-stop hosting](docs/NONSTOP-HOSTING.md)
+- [Prefixless controls](docs/PREFIXLESS-CONTROL.md)
+- [Plugin audit](docs/PLUGIN-AUDIT.md)
+- [Session setup](docs/SESSION-SETUP.md)
